@@ -9,22 +9,28 @@ class SugarBeansController < ApplicationController
       @sugar_modules = available_modules.sort
       render :action => "available_modules"
     end
+
+    respond_to do |format|
+      format.html # list.html.erb
+      format.json { render :json => @beans }
+      format.xml { render :xml => @beans }
+    end
   end
-  
+
   def show
     @sugar_module = params[:module]
-    @bean         = class_for(params[:module]).find(params[:id])
+    @bean = class_for(params[:module]).find(params[:id])
   end
-  
+
   def show_associations
     @sugar_module = params[:module]
-    @bean         = class_for(params[:module]).find(params[:id])
-    @association  = params[:association]
-    @beans        = @bean.send(@association.to_sym)
+    @bean = class_for(params[:module]).find(params[:id])
+    @association = params[:association]
+    @beans = @bean.send(@association.to_sym)
   end
-  
-  private 
-  
+
+  private
+
   def available_modules
     ["SugarCRM", SugarCRM.namespace].join("::").constantize.constants
   end
